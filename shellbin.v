@@ -30,7 +30,7 @@ fn main() {
 		// Sending data to the endpoint
 		mut http_result := http_request("POST", encoded_data)
 		if http_result != 'error' {
-			println("\x1B[36m 🚀ShellBin\033[0m v1.0.2")
+			println("\x1B[36m 🚀ShellBin\033[0m v1.0.3")
 			println("Here is your bin: https://shellbin.nextblu.com/$http_result")	
 		}else{
 			println('Please check the status at https://status.nextblu.com/')
