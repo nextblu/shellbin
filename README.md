@@ -8,7 +8,7 @@ We wanted to create a fast, beautiful and comfortable service to be able to shar
 Here is ShellBin, a very simple bin service created in `Vlang`, `Python` and `VueJs`.
 
 ## How to install and usage
-You can simply download the client from this link: 
+You can simply download the client from this link: https://github.com/nextblu/shellbin/releases/tag/v1.0.5
 
 After placing the executable in a folder of your choice you can symlink the executable for faster usage with the following code:
 
