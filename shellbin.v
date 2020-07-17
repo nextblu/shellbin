@@ -25,7 +25,7 @@ fn http_request(method, xdata string) string {
 
 fn main() {
 		// Reading data from the stdin
-        mut data := os.get_lines()
+        	mut data := os.get_lines()
 		mut encoded_data := json.encode(data)
 		// Sending data to the endpoint
 		mut http_result := http_request("POST", encoded_data)
