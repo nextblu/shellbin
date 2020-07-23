@@ -24,8 +24,40 @@ fn http_request(method, xdata string) string {
 }
 
 fn main() {
-        // Reading data from the stdin
-        mut data := os.get_lines()
+        // array to hold data read from stdin
+	mut data := []string{}
+	// this is a little tweak to allow grabbing more than one line on windows until
+	// os.get_lines is fixed on windows
+	// to get more than one line
+	$if windows {
+		// The problem is that os.get_lines() stops reading the moment it sees a blank line
+		// Unfortunately on windows, most output commands are seperated by a blank line
+		// To handle this, we need to read more than one blank line in a sequence before we can conclude
+		// that we are at the end of blank of whatever data needs to be read
+		// from std_out
+		// Here the number of times to break after seeing a non breaking sequence of blank lines chosen is 5
+		// Hopefully, this gets fixed someday and we don't need this whole block
+		max_blank_lines := 5
+		mut blank_lines_count := 0
+		mut line := ''
+		for {
+			line = os.get_line()
+			if line.len <= 0 {
+				blank_lines_count++
+				if blank_lines_count > max_blank_lines {
+					break
+				}
+			} else {
+				line = line.trim_space()
+				data << line
+				blank_lines_count = 0
+			}
+		}
+	} $else {
+		// Runs if we are not on windows
+		// This was intended to be the default behaviour
+		data = os.get_lines()
+	}
         mut encoded_data := json.encode(data)
         // Sending data to the endpoint
         mut http_result := http_request('POST', encoded_data)
