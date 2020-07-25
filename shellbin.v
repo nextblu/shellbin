@@ -23,12 +23,9 @@ fn http_request(method, xdata string) string {
         return result.text.replace('"', '')
 }
 
-fn main() {
-        // array to hold data read from stdin
-	mut data := []string{}
-	// this is a little tweak to allow grabbing more than one line on windows until
-	// os.get_lines is fixed on windows
-	// to get more than one line
+fn get_shellbin_lines() string {
+	mut line := ''
+	mut inputstr := ''
 	$if windows {
 		// The problem is that os.get_lines() stops reading the moment it sees a blank line
 		// Unfortunately on windows, most output commands are seperated by a blank line
@@ -39,9 +36,8 @@ fn main() {
 		// Hopefully, this gets fixed someday and we don't need this whole block
 		max_blank_lines := 5
 		mut blank_lines_count := 0
-		mut line := ''
 		for {
-			line = os.get_line()
+			line = get_raw_line()
 			if line.len <= 0 {
 				blank_lines_count++
 				if blank_lines_count > max_blank_lines {
@@ -49,22 +45,33 @@ fn main() {
 				}
 			} else {
 				line = line.trim_space()
-				data << line
+				inputstr += '\n'+line
 				blank_lines_count = 0
 			}
 		}
 	} $else {
-		// Runs if we are not on windows
-		// This was intended to be the default behaviour
-		data = os.get_lines()
+		for {
+			line = get_raw_line()
+			if line.len <= 0 {
+				break
+			}
+			line = line.trim_space()
+			inputstr += '\n'+line
+		}
+		return inputstr
 	}
-        mut encoded_data := json.encode(data)
-        // Sending data to the endpoint
-        mut http_result := http_request('POST', encoded_data)
-        if http_result != 'error' {
-                println('\x1B[36m ShellBin\033[0m v1.0.5')
-                println('Here is your bin: https://shellbin.nextblu.com/#/$http_result')
-        } else {
-                println('The server may be down. Please check the status at https://status.nextblu.com/')
-        }
+}
+
+fn main() {
+        // array to hold data read from stdin
+	mut data := get_shellbin_lines()
+	mut encoded_data := json.encode(data)
+	// Sending data to the endpoint
+	mut http_result := http_request('POST', encoded_data)
+	if http_result != 'error' {
+			println('\x1B[36m ShellBin\033[0m v1.0.6')
+			println('Here is your bin: https://shellbin.nextblu.com/#/$http_result')
+	} else {
+			println('The server may be down. Please check the status at https://status.nextblu.com/')
+	}
 }
