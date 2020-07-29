@@ -2,9 +2,10 @@ import os
 import json
 import net.http
 
-fn http_request(method, xdata string) string {
+
+fn http_request(xdata string) string {
         xreq := http.Request{
-                method: method
+                method: http.Method.post
                 headers: {
                         'Content-Type': 'application/json'
                 }
@@ -67,10 +68,18 @@ fn main() {
 	mut data := get_shellbin_lines()
 	mut encoded_data := json.encode(data)
 	// Sending data to the endpoint
-	mut http_result := http_request('POST', encoded_data)
+	mut http_result := http_request(encoded_data)
 	if http_result != 'error' {
-			println('\x1B[36m ShellBin\033[0m v1.0.6')
-			println('Here is your bin: https://shellbin.nextblu.com/#/$http_result')
+			$if windows{
+			    println('\x1B[36m ShellBin\033[0m v1.0.6')
+			    os.system('echo https://shellbin.nextblu.com/#/$http_result | clip')
+			    println('Here is your bin: https://shellbin.nextblu.com/#/$http_result')
+			    println('Your bin url was copied into your clipboard!')
+			    }
+			$else{
+			    println('\x1B[36m ShellBin\033[0m v1.0.6')
+			    println('Here is your bin: https://shellbin.nextblu.com/#/$http_result')
+			    }
 	} else {
 			println('The server may be down. Please check the status at https://status.nextblu.com/')
 	}
