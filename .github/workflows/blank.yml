@@ -9,11 +9,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+        - name: Checkout
+          uses: actions/checkout@v2
         - name: Setup V environment
           uses: nocturlab/setup-vlang-action@v1.1.2
           id: v
         - name: Build repository app
-          run: v .
+          run: v shellbin.v
         - name: Upload build artifacts
           id: upload-build-artifacts
           uses: actions/upload-artifact@v2
