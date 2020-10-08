@@ -13,7 +13,7 @@ jobs:
           uses: nocturlab/setup-vlang-action@v1.1.2
           id: v
         - name: Build repository app
-          run: v shellbin.v
+          run: v .
         - name: Upload build artifacts
           id: upload-build-artifacts
           uses: actions/upload-artifact@v2
