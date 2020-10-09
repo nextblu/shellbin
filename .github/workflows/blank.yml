@@ -25,6 +25,7 @@ jobs:
             name: shellbin
             path: ./shellbin
         - name: Create a Release
+          id: create_release
           uses: actions/create-release@v1.1.4
           with:
             tag_name: ${{ github.ref }}
