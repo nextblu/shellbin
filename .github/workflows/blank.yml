@@ -34,7 +34,10 @@ jobs:
             draft: false
             prerelease: false
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}            
+        - name: Release result print
+          run: |- 
+            echo ${{steps.create_release.outputs}}
         - name: Upload release assets
           id: upload-release-assets
           uses: actions/upload-release-asset@v1
