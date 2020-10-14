@@ -6,7 +6,7 @@ on:
       - v*
         
 jobs:
-  build:
+  build_ubuntu:
     runs-on: ubuntu-latest
     steps:
         - name: Checkout
@@ -16,35 +16,73 @@ jobs:
           id: v
         - name: Build repository app
           run: v shellbin.v
-        - name: Upload build artifacts
-          id: upload-build-artifacts
+        - name: Upload build artifact
+          id: upload-build-artifact-ubuntu
           uses: actions/upload-artifact@v2
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
             name: shellbin
             path: ./shellbin
-        - name: Create a Release
-          id: create_release
-          uses: actions/create-release@v1.1.4
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: Release ${{ github.ref }}
-            body: New version of Shellbin is out!
-            draft: false
-            prerelease: false
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}            
-        - name: Release result print
-          run: |- 
-            echo ${{steps.create_release.outputs}}
-        - name: Upload release assets
-          id: upload-release-assets
-          uses: actions/upload-release-asset@v1
+  build-win: 
+    runs-on: windows-2019
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        - name: Setup V environment
+          uses: nocturlab/setup-vlang-action@v1.1.2
+          id: v
+        - name: Build repository app
+          run: v shellbin.v
+        - name: Upload build artifact
+          id: upload-build-artifact-windows
+          uses: actions/upload-artifact@v2
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-            asset_path: ./shellbin
-            asset_name: shellbin
-            asset_content_type: application/x-executable
+            name: shellbin.exe
+            path: ./shellbin.exe
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Linux Artifact
+        id: download_linux_artifact
+        uses: actions/download-artifact@v2.0.5
+        with:
+          name: shellbin
+          path: ./shellbin
+      - name: Download Windows Artifact
+        id: download_windows_artifact
+        uses: actions/download-artifact@v2.0.5
+        with:
+          name: shellbin.exe
+          path: ./shellbin.exe
+      - name: Create a Release
+        id: create_release
+        uses: actions/create-release@v1.1.4
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: New version of Shellbin is out!
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}            
+      - name: Upload Linux Binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./shellbin
+          asset_name: shellbin
+          asset_content_type: application/x-executable
+      - name: Upload Windows Binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./shellbin.exe
+          asset_name: shellbin.exe
+          asset_content_type: application/x-dosexec
