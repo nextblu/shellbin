@@ -1,4 +1,4 @@
-name: CI
+name: Build and Release
 
 on:
   create:
@@ -51,12 +51,16 @@ jobs:
         with:
           name: shellbin
           path: ./shellbin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download Windows Artifact
         id: download_windows_artifact
         uses: actions/download-artifact@v2.0.5
         with:
           name: shellbin.exe
           path: ./shellbin.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create a Release
         id: create_release
         uses: actions/create-release@v1.1.4
