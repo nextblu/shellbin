@@ -3,7 +3,7 @@ import net.http
 
 fn http_request(method, xdata string) string {
 	xreq := http.Request{
-		method: http.method_from_str(method)
+		method: method
 		headers: {
 			'Content-Type': 'application/json'
 		}
