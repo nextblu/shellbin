@@ -35,7 +35,7 @@ fn get_shellbin_lines() string {
 		max_blank_lines := 5
 		mut blank_lines_count := 0
 		for {
-			line = get_raw_line()
+			line = os.get_raw_line()
 			if line.len <= 0 {
 				blank_lines_count++
 				if blank_lines_count > max_blank_lines {
@@ -49,7 +49,7 @@ fn get_shellbin_lines() string {
 		}
 	} $else {
 		for {
-			line = get_raw_line()
+			line = os.get_raw_line()
 			if line.len <= 0 {
 				break
 			}
