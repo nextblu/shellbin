@@ -1,5 +1,6 @@
 import json
 import net.http
+import os
 
 fn http_request(method, xdata string) string {
 	xreq := http.Request{
