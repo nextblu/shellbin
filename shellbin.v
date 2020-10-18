@@ -68,7 +68,7 @@ fn main() {
 	mut http_result := http_request('POST', encoded_data)
 	if http_result != 'error' {
 		println('\x1B[36m ShellBin\033[0m v1.0.6')
-		println('Here is your bin: https://shellbin.nextblu.com/#/$http_result')
+		println('Here is your bin: https://shellbin.nextblu.com/#/bin/$http_result')
 	} else {
 		println('The server may be down. Please check the status at https://status.nextblu.com/')
 	}
