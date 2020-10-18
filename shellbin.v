@@ -2,7 +2,7 @@ import json
 import net.http
 import os
 
-fn http_request(method, xdata string) string {
+fn http_request(method string, xdata string) string {
 	xreq := http.Request{
 		method: method
 		headers: {
